@@ -1,0 +1,18 @@
+#Maven
+/target/
+
+# IntelliJ
+/.idea
+*.ipr
+*.iml
+*.iws
+
+# Visual Studio Code
+.vscode
+.factorypath
+
+# Local environment
+.env
+
+# Datadabase
+*.mv.db
