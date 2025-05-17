@@ -45,7 +45,7 @@ public class JepService {
 
     for (Jep currentJep : currentJeps) {
       // Skip submitted only JEPs, no JEP number
-      if (currentJep.state == SUBMITTED) {
+      if (currentJep.state == SUBMITTED || currentJep.number == null) {
         continue;
       }
       Jep existingJep = Jep.findByNumber(currentJep.number);
