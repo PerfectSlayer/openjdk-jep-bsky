@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -12,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 public class BlueskyService {
@@ -34,16 +36,18 @@ public class BlueskyService {
     }
     
     public void postUpdate(String text) {
+        LOG.debug("Posting {}", text);
         try {
             String token = getAuthToken();
-            
-            Response response = client.target(BLUESKY_API_URL)
-                    .request(MediaType.APPLICATION_JSON)
+
+            String payload = createPostRequest(text);
+            Response response = this.client.target(BLUESKY_API_URL)
+                    .request(APPLICATION_JSON)
                     .header("Authorization", "Bearer " + token)
-                    .post(Entity.json(createPostRequest(text)));
+                    .post(Entity.json(payload));
             
-            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-                LOG.error("Failed to post to Bluesky: {}", response.readEntity(String.class));
+            if (response.getStatus() != OK.getStatusCode()) {
+                LOG.error("Failed to post to Bluesky: {} from payload {}", response.readEntity(String.class), payload);
             }
         } catch (Exception e) {
             LOG.error("Error posting to Bluesky", e);
@@ -66,10 +70,10 @@ public class BlueskyService {
         
         try {
             Response response = client.target(BLUESKY_AUTH_URL)
-                    .request(MediaType.APPLICATION_JSON)
+                    .request(APPLICATION_JSON)
                     .post(Entity.json(authRequest));
             
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            if (response.getStatus() == OK.getStatusCode()) {
                 String responseBody = response.readEntity(String.class);
                 // Extract accessJwt from response
                 String accessJwt = extractAccessJwt(responseBody);
