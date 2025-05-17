@@ -1,5 +1,6 @@
 package fr.hardcoding.service;
 
+import static fr.hardcoding.model.Jep.findByNumber;
 import static fr.hardcoding.model.JepState.SUBMITTED;
 import static java.util.Objects.requireNonNull;
 
@@ -31,6 +32,19 @@ public class JepService {
     this.blueskyService = blueskyService;
   }
 
+  public void test() {
+    // Regular message with ASCII characters
+    String message = """
+            🎯 JEP 470 proposed to target JDK 25
+            Title: PEM Encodings of Cryptographic Objects (Preview)
+            Type: feature
+            Component: security / security
+            Release: 25
+            See openjdk.org/jeps/470""";
+    // Post the regular message
+    this.blueskyService.postUpdate(message);
+  }
+
   @Scheduled(every = "1h")
   @Transactional
   public void checkJepUpdates() {
@@ -48,8 +62,7 @@ public class JepService {
       if (currentJep.state == SUBMITTED || currentJep.number == null) {
         continue;
       }
-      Jep existingJep = Jep.findByNumber(currentJep.number);
-
+      Jep existingJep = findByNumber(currentJep.number);
       if (existingJep == null) {
         // New JEP
         currentJep.persist();
@@ -61,13 +74,11 @@ public class JepService {
         updatedJeps.add(existingJep);
       }
     }
-
     // Post updates to Bluesky
     for (Jep updatedJep : updatedJeps) {
       LOG.info("Updating Jep {} with status {}", updatedJep.number, updatedJep.state);
       String message = formatJepUpdate(updatedJep);
-      LOG.info(message);
-//                blueskyService.postUpdate(message);
+      this.blueskyService.postUpdate(message);
     }
   }
 
