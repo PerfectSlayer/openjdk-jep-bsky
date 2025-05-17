@@ -124,7 +124,8 @@ public class JepService {
           yield  "📦 JEP "+jep.number+" delivered to JDK "+jep.release;
         }
       }
-      case ACTIVE -> "JEP "+jep.number+" is now active";
+      case COMPLETED -> "✅ JEP "+jep.number+" is now complete";
+      case ACTIVE -> "✅ JEP "+jep.number+" is now active";
     };
     String component = "";
     if (jep.component != null) {
