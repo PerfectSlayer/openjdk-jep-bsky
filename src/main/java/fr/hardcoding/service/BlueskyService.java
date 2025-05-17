@@ -104,6 +104,7 @@ public class BlueskyService {
     }
     
     private String createPostRequest(String text) {
+        String formattedText = text.replaceAll("\n", "\\\\n");
         return String.format("""
                 {
                     "repo": "%s",
@@ -112,6 +113,6 @@ public class BlueskyService {
                         "text": "%s",
                         "createdAt": "%s"
                     }
-                }""", handle, text, Instant.now().toString());
+                }""", this.handle, formattedText, Instant.now().toString());
     }
 } 
