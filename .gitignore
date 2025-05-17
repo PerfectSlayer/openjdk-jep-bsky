@@ -16,3 +16,4 @@
 
 # Datadabase
 *.mv.db
+*.trace.db
