@@ -78,18 +78,22 @@ public class JepService {
     List<Jep> jeps = new ArrayList<>();
 
     for (Element row : rows) {
-      Elements cells = row.select("td");
-      if (cells.size() >= 5) {
-        Jep jep = new Jep();
-        jep.type = JepType.fromShortName(cells.get(0).text());
-        jep.state = JepState.fromShortName(cells.get(1).text());
-        jep.release = valueOrNull(cells.get(2).text());
-        jep.component = componentOrNull(cells.select(".cl").text());
-        jep.subComponent = componentOrNull(cells.select(".cr").text());
-        jep.number = valueOrNull(cells.select(".jep").text());
-        jep.title = valueOrNull(requireNonNull(cells.last()).text());
-        jeps.add(jep);
-        LOG.debug("Found {}", jep);
+      try {
+        Elements cells = row.select("td");
+        if (cells.size() >= 5) {
+          Jep jep = new Jep();
+          jep.type = JepType.fromShortName(cells.get(0).text());
+          jep.state = JepState.fromShortName(cells.get(1).text());
+          jep.release = valueOrNull(cells.get(2).text());
+          jep.component = componentOrNull(cells.select(".cl").text());
+          jep.subComponent = componentOrNull(cells.select(".cr").text());
+          jep.number = valueOrNull(cells.select(".jep").text());
+          jep.title = valueOrNull(requireNonNull(cells.last()).text());
+          jeps.add(jep);
+          LOG.debug("Found {}", jep);
+        }
+      } catch (IllegalArgumentException e) {
+        LOG.warn("Failed to parse JEP {}", row.text(), e);
       }
     }
 
