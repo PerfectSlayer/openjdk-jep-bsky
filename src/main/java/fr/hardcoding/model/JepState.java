@@ -8,6 +8,7 @@ public enum JepState {
   TARGETED("Tar"),
   INTEGRATED("Int"),
   CLOSED_DELIVERED("Clo"),
+  COMPLETED("Com"),
   ACTIVE("Act");
   // TODO There might be a PROPOSED_TO_DROP missing status
 
