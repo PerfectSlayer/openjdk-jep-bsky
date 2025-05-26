@@ -41,7 +41,7 @@ public class BlueskyService {
         this.client = ClientBuilder.newClient();
     }
 
-    public void postUpdate(String text) {
+    public boolean postUpdate(String text) {
         LOG.debug("Posting {}", text);
         try {
             String token = getAuthToken();
@@ -51,11 +51,21 @@ public class BlueskyService {
                     .header("Authorization", "Bearer " + token)
                     .post(Entity.json(payload))) {
                 if (response.getStatus() != OK.getStatusCode()) {
-                    LOG.error("Failed to post to Bluesky: {} from payload {}", response.readEntity(String.class), payload);
+                    String responseString = response.readEntity(String.class);
+                    if (responseString.contains("error") && responseString.contains("ExpiredToken")) {
+                        LOG.debug("Token expired, retrying");
+                        this.authToken.set(null);
+                        this.tokenExpiry.set(null);
+                        return postUpdate(text);
+                    }
+                    LOG.error("Failed to post to Bluesky: {} from payload {}", responseString, payload);
+                    return false;
                 }
             }
+            return true;
         } catch (Exception e) {
             LOG.error("Error posting to Bluesky", e);
+            return false;
         }
     }
 
