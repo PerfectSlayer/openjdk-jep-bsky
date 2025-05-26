@@ -15,5 +15,6 @@
 .env
 
 # Datadabase
+/db/
 *.mv.db
 *.trace.db
