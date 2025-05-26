@@ -24,13 +24,13 @@ public class Jep extends PanacheEntity {
     @Override
     public String toString() {
         return "Jep{" +
-            "type=" + this.type +
-            ", state=" + this.state +
-            ", release='" + this.release + '\'' +
-            ", component='" + this.component + '\'' +
-            ", subComponent='" + this.subComponent + '\'' +
-            ", number='" + this.number + '\'' +
-            ", title='" + this.title + '\'' +
-            '}';
+                "type=" + this.type +
+                ", state=" + this.state +
+                ", release='" + this.release + '\'' +
+                ", component='" + this.component + '\'' +
+                ", subComponent='" + this.subComponent + '\'' +
+                ", number='" + this.number + '\'' +
+                ", title='" + this.title + '\'' +
+                '}';
     }
 }
