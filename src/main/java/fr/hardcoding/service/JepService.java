@@ -1,9 +1,5 @@
 package fr.hardcoding.service;
 
-import static fr.hardcoding.model.Jep.findByNumber;
-import static fr.hardcoding.model.JepState.SUBMITTED;
-import static java.util.Objects.requireNonNull;
-
 import fr.hardcoding.model.Jep;
 import fr.hardcoding.model.JepState;
 import fr.hardcoding.model.JepType;
@@ -20,6 +16,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static fr.hardcoding.model.Jep.findByNumber;
+import static fr.hardcoding.model.JepState.SUBMITTED;
+import static java.util.Objects.requireNonNull;
 
 @ApplicationScoped
 public class JepService {
@@ -62,24 +62,42 @@ public class JepService {
       if (currentJep.state == SUBMITTED || currentJep.number == null) {
         continue;
       }
-      Jep existingJep = findByNumber(currentJep.number);
+      Jep existingJep = findJep(currentJep.number);
       if (existingJep == null) {
         // New JEP
-        currentJep.persist();
-        updatedJeps.add(currentJep);
+        if (postBlueskyUpdate(currentJep)) {
+          currentJep.persist();
+        }
       } else if (!existingJep.state.equals(currentJep.state)) {
         // Status changed
-        existingJep.state = currentJep.state;
-        existingJep.persist();
-        updatedJeps.add(existingJep);
+        if (postBlueskyUpdate(currentJep)) {
+          existingJep.type = currentJep.type;
+          existingJep.state = currentJep.state;
+          existingJep.release = currentJep.release;
+          existingJep.component = currentJep.component;
+          existingJep.subComponent = currentJep.subComponent;
+          existingJep.number = currentJep.number;
+          existingJep.title = currentJep.title;
+          existingJep.persist();
+        }
       }
     }
-    // Post updates to Bluesky
-    for (Jep updatedJep : updatedJeps) {
-      LOG.info("Updating Jep {} with status {}", updatedJep.number, updatedJep.state);
-      String message = formatJepUpdate(updatedJep);
-      this.blueskyService.postUpdate(message);
-    }
+  }
+
+  private Jep findJep(String number) {
+    return findByNumber(number);
+//        Jep jep = findByNumber(number);
+//        // Return different state to manually trigger post update
+//        if (jep != null && Arrays.asList("508", "515", "514", "507").contains(jep.number)) {
+//          jep.state = jep.state == DRAFTED ? SUBMITTED : DRAFTED;
+//        }
+//        return jep;
+  }
+
+  private boolean postBlueskyUpdate(Jep updatedJep) {
+    LOG.info("Updating Jep {} with status {}", updatedJep.number, updatedJep.state);
+    String message = formatJepUpdate(updatedJep);
+    return this.blueskyService.postUpdate(message);
   }
 
   private List<Jep> fetchJeps() throws IOException {
