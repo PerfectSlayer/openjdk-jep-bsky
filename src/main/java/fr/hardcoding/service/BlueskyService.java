@@ -27,9 +27,10 @@ public class BlueskyService {
     private static final String BLUESKY_AUTH_URL = "https://bsky.social/xrpc/com.atproto.server.createSession";
     private static final Pattern OPENJDK_LINK_PATTERN = Pattern.compile("openjdk\\.org/jeps/(\\d+)");
 
+    @ConfigProperty(name = "bluesky.mock", defaultValue = "false")
+    boolean mock;
     @ConfigProperty(name = "bluesky.handle")
     String handle;
-
     @ConfigProperty(name = "bluesky.app-password")
     String appPassword;
 
@@ -42,7 +43,12 @@ public class BlueskyService {
     }
 
     public boolean postUpdate(String text) {
-        LOG.debug("Posting {}", text);
+        if (this.mock) {
+            LOG.info("Mock posting to Bluesky: {}", text);
+            return true;
+        } else {
+            LOG.debug("Posting {}", text);
+        }
         try {
             String token = getAuthToken();
             String payload = createPostRequest(text);
