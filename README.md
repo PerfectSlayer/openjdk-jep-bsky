@@ -34,8 +34,14 @@ bluesky.app-password=your-app-password
 
 ### Using Docker
 
+Create a volume to store JEP database, and run `ghcr.io/PerfectSlayer/openjdk-jep-bsky` image:
+
 ```shell
-docker run ghcr.io/PerfectSlayer/openjdk-jep-bsky:master
+docker volume create jep-tracker-db
+docker run -d
+  -name jep-tracker \
+  -v jep-tracker-db:/app/db \
+  ghcr.io/PerfectSlayer/openjdk-jep-bsky:master 
 ```
 
 ## License
