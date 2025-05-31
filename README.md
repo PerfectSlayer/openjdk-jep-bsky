@@ -35,7 +35,7 @@ bluesky.app-password=your-app-password
 ### Using Docker
 
 ```shell
-docker run ghcr.io/PerfectSlayer/openjdk-jep-bsky:latest
+docker run ghcr.io/PerfectSlayer/openjdk-jep-bsky:master
 ```
 
 ## License
