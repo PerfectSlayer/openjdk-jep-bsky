@@ -21,6 +21,10 @@ public enum JepType {
         throw new IllegalArgumentException("Unknown JepType short name: " + shortName);
     }
 
+    public String shortName() {
+        return this.shortName;
+    }
+
     @Override
     public String toString() {
         return this.name().toLowerCase();

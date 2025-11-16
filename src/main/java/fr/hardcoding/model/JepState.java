@@ -26,4 +26,8 @@ public enum JepState {
         }
         throw new IllegalArgumentException("Unknown JepStatus short name: " + shortName);
     }
+
+    public String shortName() {
+        return this.shortName;
+    }
 }

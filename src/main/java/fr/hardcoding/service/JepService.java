@@ -84,7 +84,7 @@ public class JepService {
         }
     }
 
-    private Jep findJep(String number) {
+    private static Jep findJep(String number) {
         return findByNumber(number);
 //        Jep jep = findByNumber(number);
 //        // Return different state to manually trigger post update
@@ -100,10 +100,14 @@ public class JepService {
         return this.blueskyService.postUpdate(message);
     }
 
-    private List<Jep> fetchJeps() throws IOException {
-        LOG.info("Fetching JEPs");
+    private static List<Jep> fetchJeps() throws IOException {
         Document doc = Jsoup.connect(JEP_URL).get();
-        Elements rows = doc.select("table.jeps tr");
+        return parseJeps(doc);
+    }
+
+    static List<Jep> parseJeps(Document document) {
+        LOG.info("Parsing JEPs");
+        Elements rows = document.select("table.jeps tr");
         List<Jep> jeps = new ArrayList<>();
 
         for (Element row : rows) {
@@ -129,11 +133,11 @@ public class JepService {
         return jeps;
     }
 
-    private String valueOrNull(String s) {
+    private static String valueOrNull(String s) {
         return s.isBlank() ? null : s;
     }
 
-    private String componentOrNull(String s) {
+    private static String componentOrNull(String s) {
         String value = valueOrNull(s);
         return switch (value) {
             case null -> null;
@@ -142,7 +146,7 @@ public class JepService {
         };
     }
 
-    private String formatJepUpdate(Jep jep) {
+    private static String formatJepUpdate(Jep jep) {
         String status = switch (jep.state) {
             case DRAFTED -> "✏️ JEP " + jep.number + " was drafted";
             case SUBMITTED -> "🗳️ JEP " + jep.number + " was submitted";
