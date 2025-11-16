@@ -148,7 +148,7 @@ public class JepService {
             case SUBMITTED -> "🗳️ JEP " + jep.number + " was submitted";
             case CANDIDATE -> "🎓 JEP " + jep.number + " moved to candidate";
             case PROPOSED_TO_TARGET -> "🎯 JEP " + jep.number + " proposed to target JDK " + jep.release;
-            case TARGETED -> "🎯 JEP " + jep.number + " updated to target JDK " + jep.release;
+            case TARGETED -> "🎯 JEP " + jep.number + " updated to target " + (jep.release == null ? "next JDK" : "JDK " + jep.release);
             case INTEGRATED -> "🏗️ JEP " + jep.number + " integrated to JDK " + jep.release;
             case CLOSED_DELIVERED -> {
                 if (jep.release == null) {
