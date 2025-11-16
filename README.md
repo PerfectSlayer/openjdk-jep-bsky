@@ -8,7 +8,7 @@ This [@jeptracker.bsky.social bot](https://bsky.app/profile/jeptracker.bsky.soci
 
 ### Prerequisites
 
-- Java 21 or later
+- Java 25 or later
 - Maven
 - A Bluesky account
 
