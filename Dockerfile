@@ -7,4 +7,4 @@ COPY --chown=185 target/quarkus-app/*.jar /app/
 COPY --chown=185 target/quarkus-app/app/ /app/app/
 COPY --chown=185 target/quarkus-app/quarkus/ /app/quarkus/
 
-CMD ["java", "-jar", "quarkus-run.jar"]
+CMD ["java", "-Xms32m", "-Xmx128m", "-XX:+UseSerialGC", "-jar", "quarkus-run.jar"]
