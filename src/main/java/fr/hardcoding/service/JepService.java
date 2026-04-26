@@ -49,7 +49,6 @@ public class JepService {
     @Transactional
     public void checkJepUpdates() {
         List<Jep> currentJeps;
-        List<Jep> updatedJeps = new ArrayList<>();
         try {
             currentJeps = fetchJeps();
         } catch (IOException e) {
@@ -151,8 +150,10 @@ public class JepService {
             case DRAFTED -> "✏️ JEP " + jep.number + " was drafted";
             case SUBMITTED -> "🗳️ JEP " + jep.number + " was submitted";
             case CANDIDATE -> "🎓 JEP " + jep.number + " moved to candidate";
-            case PROPOSED_TO_TARGET -> "🎯 JEP " + jep.number + " proposed to target JDK " + jep.release;
-            case TARGETED -> "🎯 JEP " + jep.number + " updated to target " + (jep.release == null ? "next JDK" : "JDK " + jep.release);
+            case PROPOSED_TO_TARGET -> "🎯 JEP " + jep.number + " proposed to target " +
+                    (jep.release == null ? "next JDK" : "JDK " + jep.release);
+            case TARGETED -> "🎯 JEP " + jep.number + " updated to target " +
+                    (jep.release == null ? "next JDK" : "JDK " + jep.release);
             case INTEGRATED -> "🏗️ JEP " + jep.number + " integrated to JDK " + jep.release;
             case CLOSED_DELIVERED -> {
                 if (jep.release == null) {
